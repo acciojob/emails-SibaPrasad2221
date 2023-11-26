@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class Workspace extends Gmail{
 
@@ -13,7 +14,7 @@ public class Workspace extends Gmail{
     public Workspace(String emailId) {
         // The inboxCapacity is equal to the maximum value an integer can store.
         super(emailId, Integer.MAX_VALUE);
-        this.calendar = new ArrayList<>();
+        calendar = new ArrayList<>();
 
     }
 
@@ -27,21 +28,32 @@ public class Workspace extends Gmail{
         // 1. At a particular time, you can be present in at most one meeting
         // 2. If you want to attend a meeting, you must join it at its start time and leave at end time.
         // Example: If a meeting ends at 10:00 am, you cannot attend another meeting starting at 10:00 am
-        int maxMeeting =0;
-        for(Meeting meet: calendar){
-            if(canAttendMeeting(meet)){
-                maxMeeting++;
+        if (calendar.isEmpty())
+            return 0;
+
+        ArrayList<Meeting> temp = new ArrayList<>(calendar);
+        temp.sort(Comparator.comparing(Meeting::getEndTime));
+
+        int count = 1;
+        LocalTime lastEndtime = temp.get(0).getEndTime();
+
+        for (int i = 1; i < temp.size(); ++i) {
+            Meeting curr = temp.get(i);
+            if (curr.getStartTime().isAfter(lastEndtime)) {
+                ++count;
+                lastEndtime = curr.getEndTime();
             }
         }
-        return maxMeeting;
+
+        return count;
     }
-    private boolean canAttendMeeting(Meeting meeting){
-        for(Meeting existingMeeting: calendar){
-            if(!(meeting.endTime.isBefore(existingMeeting.startTime) ||
-                 meeting.startTime.isAfter(existingMeeting.endTime))){
-                return false;
-            }
-        }
-        return true;
-    }
+//    private boolean canAttendMeeting(Meeting meeting){
+//        for(Meeting existingMeeting: calendar){
+//            if(!(meeting.endTime.isBefore(existingMeeting.startTime) ||
+//                 meeting.startTime.isAfter(existingMeeting.endTime))){
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 }

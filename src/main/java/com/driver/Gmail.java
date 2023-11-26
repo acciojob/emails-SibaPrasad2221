@@ -24,8 +24,7 @@ public class Gmail extends Email {
         // 1. Each mail in the inbox is distinct.
         // 2. The mails are received in non-decreasing order. This means that the date of a new mail is greater than equal to the dates of mails received already.
         if(inbox.size() >= getInboxCapacity()){
-            Mail oldestMail = inbox.remove(0);
-            trash.add(oldestMail);
+            deleteMail(findOldestMessage());
         }
         inbox.add(new Mail(date, sender, message));
     }
@@ -33,17 +32,11 @@ public class Gmail extends Email {
     public void deleteMail(String message){
         // Each message is distinct
         // If the given message is found in any mail in the inbox, move the mail to trash, else do nothing
-        Mail mail_del = null;
-        for(Mail mail: inbox){
-            if(mail.getMessage().equals(message)){
-                mail_del = mail;
+        for (int i = 0; i < inbox.size(); ++i){
+            if (inbox.get(i).message.equals(message)) {
+                trash.add(inbox.remove(i));
                 break;
             }
-        }
-
-        if(mail_del!=null){
-            inbox.remove(mail_del);
-            trash.add(mail_del);
         }
     }
 
@@ -58,7 +51,7 @@ public class Gmail extends Email {
         // If the inbox is empty, return null
         // Else, return the message of the oldest mail present in the inbox
         if(inbox.size()==0) return null;
-        return inbox.get(0).getMessage();
+        return inbox.get(0).message;
     }
 
     public int findMailsBetweenDates(Date start, Date end){
@@ -66,10 +59,9 @@ public class Gmail extends Email {
         //It is guaranteed that start date <= end date
         int count = 0;
         for(Mail mail: inbox){
-            Date mailDate = mail.getDt();
-            if(mailDate.equals(start) || (mailDate.after(start) && mailDate.before(end))){
-                count++;
-            }
+            Date date = mail.getDt();
+            if (date.compareTo(start) >= 0 && date.compareTo(end) <= 0)
+                ++count;
         }
         return count;
     }
