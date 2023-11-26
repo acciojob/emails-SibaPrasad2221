@@ -25,30 +25,53 @@ public class Email {
         // 3. It contains at least one lowercase letter
         // 4. It contains at least one digit
         // 5. It contains at least one special character. Any character apart from alphabets and digits is a special character
-        if(password.equals(oldPassword)){
-            int len = newPassword.length();
-            boolean isOneUpperCase=false;
-            boolean isOneLowerCase=false;
-            boolean isOneDigit=false;
-            boolean isSpecialChar=false;
+//        if(password.equals(oldPassword)){
+//            int len = newPassword.length();
+//            boolean isOneUpperCase=false;
+//            boolean isOneLowerCase=false;
+//            boolean isOneDigit=false;
+//            boolean isSpecialChar=false;
+//
+//            for(int i=0;i<len;i++){
+//                char ch = newPassword.charAt(i);
+//                if(ch>='A' && ch<='Z') isOneUpperCase = true;
+//
+//                if(ch>='a' && ch<='z') isOneLowerCase = true;
+//
+//                if(ch>='0' && ch<='9') isOneDigit = true;
+//
+//                else isSpecialChar = true;
+//
+//
+//            }
+//
+//            if(len>=8 && isOneUpperCase && isOneLowerCase && isOneDigit && isSpecialChar){
+//                password = newPassword;
+//            }
+//
+//        }
 
-            for(int i=0;i<len;i++){
-                char ch = newPassword.charAt(i);
-                if(ch>='A' && ch<='Z') isOneUpperCase = true;
+        if (!oldPassword.equals(getPassword()) || newPassword.length() < 8)
+            return;
 
-                if(ch>='a' && ch<='z') isOneLowerCase = true;
+        int count_upper = 0, count_lower = 0, count_digit = 0, count_special = 0;
 
-                if(ch>='0' && ch<='9') isOneDigit = true;
+        for (int i = 0; i < newPassword.length() && (count_upper < 1 || count_lower < 1 || count_digit < 1 || count_special < 1); ++i) {
+            char ch = newPassword.charAt(i);
 
-                else isSpecialChar = true;
-
-
-            }
-
-            if(len>=8 && isOneUpperCase && isOneLowerCase && isOneDigit && isSpecialChar){
-                password = newPassword;
-            }
-
+            if (ch >= 'A' && ch <= 'Z')
+                ++count_upper;
+            else if (ch >= 'a' && ch <= 'z')
+                ++count_lower;
+            else if (ch >= '0' && ch <= '9')
+                ++count_digit;
+            else
+                ++count_special;
         }
+
+        if (count_upper == 0 || count_lower == 0 || count_digit == 0 || count_special == 0)
+            return;
+
+        password = newPassword;
     }
 }
