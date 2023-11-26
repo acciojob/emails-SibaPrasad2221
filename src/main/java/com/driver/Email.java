@@ -34,11 +34,13 @@ public class Email {
 
             for(int i=0;i<len;i++){
                 char ch = newPassword.charAt(i);
-                if(ch>=65 && ch<=90) isOneUpperCase = true;
+                if(ch>='A' && ch<='Z') isOneUpperCase = true;
 
-                if(ch>=97 && ch<=122) isOneLowerCase = true;
+                if(ch>='a' && ch<='z') isOneLowerCase = true;
 
-                if(ch>=0 && ch<=9) isOneDigit = true;
+                if(ch>='0' && ch<='9') isOneDigit = true;
+
+                else isSpecialChar = true;
 
 
             }
